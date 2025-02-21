@@ -18,7 +18,7 @@ public class ConfigController {
     private ConfigService configService;
 
     @PostMapping("/changeIrrigationStatus")
-    public void changeIrrigationStatus(@RequestBody boolean irrigationStatus) {
+    public void changeIrrigationStatus(@RequestBody Boolean irrigationStatus) {
         configService.setManualMode(irrigationStatus);
     }
 }

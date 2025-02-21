@@ -1,6 +1,8 @@
 package com.bankmisr.controller;
 
-import java.util.List;  
+import java.util.List;
+
+import com.bankmisr.service.PlotServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,16 +20,17 @@ import com.bankmisr.service.PlotService;
 
 @RestController
 @RequestMapping("/api/plot")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",allowedHeaders = "*",
+		allowCredentials = "true")
 public class PlotController {
 
-	private final PlotService plotService;
+	private final PlotServiceImpl plotService;
 	@Autowired
-	public PlotController(PlotService plotService) {
+	public PlotController(PlotServiceImpl plotService) {
 		this.plotService = plotService;
 	}
 
-	@GetMapping("/")
+	@GetMapping
 	public List<Plot> getAllPlots() {
 		return plotService.getAllPlots();
 	}

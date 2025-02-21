@@ -1,42 +1,63 @@
-<div class="container mx-auto py-8">
-  <div class="bg-white shadow overflow-hidden rounded-md">
-    <div class="px-4 py-5 sm:px-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg leading-6 font-medium text-gray-900">
-          Automatic Irrigation System
-        </h2>
-        <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" (click)="addPlot()">
-          Add Plot
-        </button>
+<div class="row">
+  <div>
+    <div class="card mt-4">
+      <div class="card-body">
+        <div class="head">
+          <h2>Automatic Irrigation System</h2>
+          <button type="button" class="irrigation-system-button"
+                  (click)="addPlot()">Add Plot</button>
+        </div>
+        <div class="row">
+          <div class="col-12 mt-4 ml-3">
+            <h3 class="float-left">Plots</h3>
+            <h3 class="float-right"> <input type="checkbox"  [(ngModel)]="isManualMode"> irrigation in manual Mode</h3>
+            <table class="table">
+              <thead class="thead-light">
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">plot Id</th>
+                <th scope="col">plot Location</th>
+                <th scope="col">plot Area by m2</th>
+                <th scope="col">owner name</th>
+                <th scope="col">last Irragtion Date</th>
+                <th scope="col">next Irragtion Date</th>
+                <th scope="col">Sensor status</th>
+                <th scope="col">Turn on off sensor</th>
+                <th scope="col"  *ngIf="selectedPlot && isManualMode">toggleIrrigationStatus</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let plot of plots">
+                <th scope="plot"> </th>
+                <td><a href="javascript: void(0);" (click)="openPlotDetails(plot)">{{ plot.id }}</a></td>
+                <td>{{ plot.location }}</td>
+                <td>{{ plot.area }}</td>
+                <td>{{ plot.ownerName }}</td>
+                <td>
+                  {{ plot?.lastIrragtionDate?.split('T')[0]}} {{plot?.lastIrragtionDate?.split('T')[1].split('.')[0]}}
+                </td>
+                <td>
+                  {{ plot?.nextIrragtionDate?.split('T')[0]}} {{plot?.nextIrragtionDate?.split('T')[1].split('.')[0]}}
+                </td>
+                <td>
+                  {{ plot?.plotSensor?.available }}
+                </td>
+                <th scope="col">
+                  <button type="button" class="irrigation-system-button"
+                          (click)="changeAutoManual(plot)">turn On/Off</button>
+                </th>
+
+                <th scope="col"  *ngIf="selectedPlot && isManualMode">
+                  <button type="button" class="irrigation-system-button"
+                          (click)="toggleIrrigationStatus()">toggleIrrigationStatus</button>
+                </th>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="border-t border-gray-200">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-        <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plot ID</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Area (m²)</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Irrigation</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Irrigation</th>
-        </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let plot of plots">
-          <td class="px-6 py-4 whitespace-nowrap"></td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <a href="javascript: void(0);" class="text-blue-600 hover:text-blue-800" (click)="openPlotDetails(plot)">{{ plot.id }}</a>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ plot.location }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ plot.area }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ plot.ownerName }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(plot.lastIrragtionDate) }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(plot.nextIrragtionDate) }}</td>
-        </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </div>

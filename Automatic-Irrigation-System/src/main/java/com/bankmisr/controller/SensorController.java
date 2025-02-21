@@ -14,7 +14,7 @@ public class SensorController {
     private PlotSensorService plotSensorService;
 
     @GetMapping("/{sensorId}")
-    public PlotSensor getSensorData(@PathVariable int sensorId) {
+    public PlotSensor getSensorData(@PathVariable Integer sensorId) {
         return plotSensorService.getPlotSensor(sensorId);
     }
 

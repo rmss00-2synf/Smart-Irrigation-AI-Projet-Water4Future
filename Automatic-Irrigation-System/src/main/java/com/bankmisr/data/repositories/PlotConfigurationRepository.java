@@ -7,4 +7,5 @@ import com.bankmisr.data.model.PlotConfiguration;
 
 public interface PlotConfigurationRepository extends JpaRepository<PlotConfiguration, Integer> {
 
+
 }

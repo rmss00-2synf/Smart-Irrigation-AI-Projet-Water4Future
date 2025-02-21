@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import com.bankmisr.service.ConfigService;
+import com.bankmisr.service.PlotConfigurationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class IrrigationTransactionScheduler implements Constants {
 	PlotRepository plotRepository;
 
 	@Autowired
+	private PlotConfigurationServiceImpl plotConfigurationService;
+
+	@Autowired
 	PlotSensorIntegration plotSensorIntegration;
 
 	@Autowired
@@ -40,10 +44,10 @@ public class IrrigationTransactionScheduler implements Constants {
 	@Autowired
 	private ConfigService configService;
 
-	@Scheduled(fixedRate = IRRIGATION_TRANSACTION_SCHEDULER_FIXED_RATE)
+	@Scheduled(fixedRate = 30000)
 	public void ExecuteIrrigationTransactions() {
 
-		if (configService.isManualMode()) {
+		if (configService.getManualMode()) {
 			log.info("Irrigation in manual mode. Skipping automatic scheduling.");
 			return;
 		}
@@ -59,7 +63,7 @@ public class IrrigationTransactionScheduler implements Constants {
 				irrigationTransaction.setPlot(plot);
 				irrigationTransaction.setIrragtionDate(LocalDateTime.now());
 				irrigationTransaction.setStatus(IrrigationTransactionStatus.SCHEDULED);
-				irrigationTransaction.setTrials(0);
+				irrigationTransaction.setTrials(Integer.valueOf(0));
 
 				irrigationTransactionRepository.save(irrigationTransaction);
 				//call sensor
@@ -68,11 +72,11 @@ public class IrrigationTransactionScheduler implements Constants {
 				if (irrigationExecutionResult) {
 					irrigationTransaction.setStatus(IrrigationTransactionStatus.SUCCEDED);
 					plot.setLastIrragtionDate(LocalDateTime.now());
-					PlotConfiguration plotConfiguration = plot.getPlotConfigurations().stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
+					PlotConfiguration plotConfiguration = plotConfigurationService.getPlotConfigurations(plot.getId()).stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
 					plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
 
 				} else {
-					irrigationTransaction.setTrials(1);
+					irrigationTransaction.setTrials(Integer.valueOf(1));
 					irrigationTransaction.setStatus(IrrigationTransactionStatus.FAILED);
 				}
 				plotRepository.save(plot);

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConfigService {
 
-    private Boolean manualMode = false;
+    private Boolean manualMode = (Boolean) false;
 
 }

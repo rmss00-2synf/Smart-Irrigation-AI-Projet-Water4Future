@@ -1,9 +1,10 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { constants } from '../constants';
 import { catchError, map } from 'rxjs/operators';
 import { lastValueFrom, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { constants } from '../constants';
-import { environment } from '../../environments/environment';
+import { PlotSensor } from '../models/plot.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,23 @@ export class IrrigationSystemService {
       environment.baseURL +
       constants.API.EDIT_PLOT_API.replace('{plotId}', plotId);
     await lastValueFrom(this.http.patch(url, plot));
+  }
+
+  async toggleIrrigationStatus(data: any): Promise<any> {
+    const url = environment.baseURL + "/api/config/changeIrrigationStatus";
+    let res: any = await lastValueFrom(this.http.post(url, data));
+    return res;
+  }
+
+  async getSensor(sensorId: any): Promise<any> {
+    const url = `${environment.baseURL}/api/sensor/${sensorId}`;
+    let res: any = await lastValueFrom(this.http.get(url.replace("{sensorId}", sensorId)));
+    return res;
+  }
+
+  async updateSensor(sensor: any): Promise<any> {
+    const url = environment.baseURL + "/api/sensor/";
+    let res: any = await lastValueFrom(this.http.post(url, sensor));
+    return res;
   }
 }

@@ -26,6 +26,8 @@ public class PlotServiceImpl implements PlotService {
 	private final CropRepository cropRepository;
 	private final PlotSensorService plotSensorService;
 	private final PlotSensorRepository plotSensorRepository;
+	@Autowired
+	private PlotConfigurationServiceImpl plotConfigurationService;
 
 	@Autowired
 	public PlotServiceImpl(PlotRepository plotRepository, CropRepository cropRepository,PlotSensorService plotSensorService,PlotSensorRepository plotSensorRepository) {
@@ -37,7 +39,7 @@ public class PlotServiceImpl implements PlotService {
 
 
 	public List<Plot> getAllPlots() {
-		List<Plot> plots = new ArrayList<Plot>();
+		List<Plot> plots = new ArrayList<>();
 		plotRepository.findAll().forEach(plots::add);
 		return plots;
 	}
@@ -47,9 +49,6 @@ public class PlotServiceImpl implements PlotService {
 		return plotRepository.findById(id).orElse(null);
 	}
 
-	public Plot getPlotById(int id) {
-		return plotRepository.findById(id).orElse(null);
-	}
 
 	public Plot addNewPlot(PlotDto plotDto) {
 
@@ -65,13 +64,11 @@ public class PlotServiceImpl implements PlotService {
 		plotConfiguration.setWaterAmount(plotDto.getPlotConfiguration().getWaterAmount());
 		plotConfiguration.setIrrigationRate(plotDto.getPlotConfiguration().getIrrigationRate());
 		plotConfiguration.setPlot(plot);
-		plotConfiguration.setCurrentConfig(true);
-
-		plot.setPlotConfigurations(Set.of(plotConfiguration));
+		plotConfiguration.setCurrentConfig(Boolean.valueOf(true));
 
 		//plot sensor
 		PlotSensor plotSensor = new PlotSensor();
-		plotSensor.setAvailable(true);
+		plotSensor.setAvailable(Boolean.valueOf(true));
 		plot.setPlotSensor(plotSensor);
 
 		return plotRepository.save(plot);
@@ -92,7 +89,8 @@ public class PlotServiceImpl implements PlotService {
 			plot.setOwnerName(plotDto.getOwnerName());
 		}
 
-		PlotConfiguration plotConfiguration = plot.getPlotConfigurations().stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
+		PlotConfiguration plotConfiguration = plotConfigurationService.getPlotConfigurations(plot.getId())
+				.stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
 
 		if (plotDto.getPlotConfiguration().getCropId() > 0) {
 			Crop crop = cropRepository.findById(plotDto.getPlotConfiguration().getCropId()).orElseThrow(() -> new ResourceNotFoundException("crop with id: " + plotDto.getPlotConfiguration().getCropId()));
@@ -127,7 +125,7 @@ public class PlotServiceImpl implements PlotService {
 	@Override
 	public void toggleSensor(Integer plotId) {
 		Plot plot = plotRepository.findById(plotId).orElseThrow(() -> new ResourceNotFoundException("Plot with id: " + plotId));
-		plot.getPlotSensor().setAvailable(!plot.getPlotSensor().getAvailable());
+		plot.getPlotSensor().setAvailable(Boolean.valueOf(!plot.getPlotSensor().getAvailable()));
 		plotSensorRepository.save(plot.getPlotSensor());
 	}
 

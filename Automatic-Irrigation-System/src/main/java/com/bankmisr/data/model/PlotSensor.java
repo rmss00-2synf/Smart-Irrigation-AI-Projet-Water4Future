@@ -30,7 +30,7 @@ public class PlotSensor {
 
 	@Column
 	private Double temperature;
-	
+
 	@OneToOne(mappedBy = "plotSensor")
 	@JsonBackReference
     private Plot plot;

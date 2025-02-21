@@ -1,5 +1,6 @@
 package com.bankmisr.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.bankmisr.data.model.IrrigationTransaction;
 import com.bankmisr.data.model.PlotConfiguration;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 @Component
 public class PlotSensorIntegrationImpl implements PlotSensorIntegration{
 
+	@Autowired
+	private PlotConfigurationServiceImpl plotConfigurationService;
 	private static final Logger log = LoggerFactory.getLogger(IrrigationTransactionScheduler.class);
 
 	@Override
@@ -20,7 +23,7 @@ public class PlotSensorIntegrationImpl implements PlotSensorIntegration{
 
         log.info("Executing Irrigation for plot: {}", irrigationTransaction.getPlot().getId());
 
-		PlotConfiguration plotConfiguration = irrigationTransaction.getPlot().getPlotConfigurations().stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
+		PlotConfiguration plotConfiguration = plotConfigurationService.getPlotConfigurations(irrigationTransaction.getPlot().getId()).stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
 
         log.info("Executing Irrigation With Water Amount: {}", plotConfiguration.getWaterAmount());
 

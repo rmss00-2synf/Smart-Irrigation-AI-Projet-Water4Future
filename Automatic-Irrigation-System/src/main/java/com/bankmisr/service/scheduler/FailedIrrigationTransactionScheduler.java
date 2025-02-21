@@ -3,6 +3,9 @@ package com.bankmisr.service.scheduler;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.transaction.Transactional;
+
+import com.bankmisr.service.PlotAlertServiceImpl;
+import com.bankmisr.service.PlotConfigurationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +31,18 @@ public class FailedIrrigationTransactionScheduler implements Constants{
 	private IrrigationTransactionRepository irrigationTransactionRepository;
 
 	@Autowired
+	private PlotConfigurationServiceImpl plotConfigurationService;
+
+	@Autowired
+	private PlotAlertServiceImpl plotAlertService;
+
+	@Autowired
 	private PlotSensorIntegration plotSensorIntegration;
 
 	@Value("${irrigation.failed.transactions.trials}")
 	private int irrigationFailedTransactionTrials;
 
-	@Scheduled(fixedRate = FAILED_IRRIGATION_TRANSACTION_SCHEDULER_FIXED_RATE)
+	@Scheduled(fixedRate = 60000)
 	public void ExecuteIrrigationTransactions() {
 
 		Set<IrrigationTransaction> failedIrrigationTransactions = irrigationTransactionRepository.findFailedIrrigationTransactions(irrigationFailedTransactionTrials);
@@ -47,13 +56,13 @@ public class FailedIrrigationTransactionScheduler implements Constants{
 
 				if (irrigationExecutionResult) {
 					irrigationTransaction.setStatus(IrrigationTransactionStatus.SUCCEDED);
-					irrigationTransaction.setTrials(0);
+					irrigationTransaction.setTrials(Integer.valueOf(0));
 					irrigationTransaction.getPlot().setLastIrragtionDate(LocalDateTime.now());
-					PlotConfiguration plotConfiguration = irrigationTransaction.getPlot().getPlotConfigurations().stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
+					PlotConfiguration plotConfiguration = plotConfigurationService.getPlotConfigurations(irrigationTransaction.getPlot().getId()).stream().filter(PlotConfiguration::getCurrentConfig).toList().get(0);
 					irrigationTransaction.getPlot().setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
 
 				} else {
-					irrigationTransaction.setTrials(irrigationTransaction.getTrials() + 1);
+					irrigationTransaction.setTrials(Integer.valueOf(irrigationTransaction.getTrials() + 1));
 
 					if (irrigationTransaction.getTrials() == irrigationFailedTransactionTrials) {
 
@@ -62,7 +71,8 @@ public class FailedIrrigationTransactionScheduler implements Constants{
 						plotAlert.setPlot(irrigationTransaction.getPlot());
 						plotAlert.setIrrigationTransaction(irrigationTransaction);
 
-						irrigationTransaction.getPlot().getPlotAlerts().add(plotAlert);
+//						plotAlert.getIrrigationTransaction(irrigationTransaction.getPlot().getId())
+//						irrigationTransaction.getPlot().getPlotAlerts().add(plotAlert);
 					}
 				}
 				irrigationTransactionRepository.save(irrigationTransaction);

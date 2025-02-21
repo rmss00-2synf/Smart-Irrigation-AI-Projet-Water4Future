@@ -1,5 +1,6 @@
 package com.bankmisr.service;
 
+import com.bankmisr.controller.payload.PlotSensorDto;
 import com.bankmisr.data.model.PlotSensor;
 import com.bankmisr.data.repositories.PlotSensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PlotSensorService {
     public void init() {
         List<PlotSensor> allSensors = plotSensorRepository.findAll();
         allSensors.forEach(plotSensor -> {
-            SensorSimulator simulator = new SensorSimulator(plotSensor, plotSensorRepository);
+            SensorSimulator simulator = new SensorSimulator(PlotSensorDto.toDto(plotSensor), plotSensorRepository);
             executorService.execute(simulator);
         });
     }

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
 import { IrrigationSystemService } from 'src/app/services/irrigation-system.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Plot } from 'src/app/models/plot.model';
+import { PlotSensorService } from 'src/app/services/plot-sensor.service';
+import { Component, OnInit } from '@angular/core';
+import { Plot, PlotSensor } from 'src/app/models/plot.model';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SavePlotModalComponent } from '../details/save-plot-modal/save-plot-modal.component';
 
 @Component({
@@ -13,12 +14,17 @@ import { SavePlotModalComponent } from '../details/save-plot-modal/save-plot-mod
 })
 export class HomeComponent implements OnInit {
   plots: any[] = [];
+  irrigationStatus: boolean = false;
+  isManualMode: boolean = false;
+  selectedPlot:any
 
   constructor(
     private irrigationSystemService: IrrigationSystemService,
     private router: Router,
-    private modalService: NgbModal
-  ) {}
+    private modalService: NgbModal,
+    private plotSensorService: PlotSensorService
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadPlots();
@@ -28,12 +34,13 @@ export class HomeComponent implements OnInit {
     this.irrigationSystemService.getPlots().subscribe({
       next: (plots) => {
         this.plots = plots;
+        //console.log(plots)
       },
       error: (e) => console.error(e)
     });
   }
 
-  openPlotDetails(plot: Plot) {
+  async openPlotDetails(plot: Plot) {
     this.router.navigate([`details/${plot.id}`]);
   }
 
@@ -57,11 +64,21 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  // Fonction pour formater la date
-  formatDate(date: string): string {
-    if (!date) return ''; // Gérer le cas où la date est null ou undefined
-    const parts = date.split('T');
-    if (parts.length < 2) return parts[0]; // Si pas de partie temps, retourne juste la date
-    return `${parts[0]} ${parts[1]?.split('.')[0]}`;
+  async toggleIrrigationStatus() {
+    this.irrigationStatus = !this.irrigationStatus
+    await this.irrigationSystemService.toggleIrrigationStatus(this.irrigationStatus);
+    this.loadPlots();
+  }
+
+  async changeAutoManual(plot: any) {
+    this.selectedPlot = plot
+    if(plot.plotSensor.available){
+      plot.plotSensor.available = false;
+    }else{
+      plot.plotSensor.available = true;
+    }
+
+    await this.plotSensorService.updateSensor(plot.plotSensor);
+    this.loadPlots();
   }
 }

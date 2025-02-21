@@ -42,19 +42,7 @@ public class Plot {
 	
 	@Column  
 	private LocalDateTime lastIrragtionDate;
-	
-	@OneToMany(mappedBy = "plot",cascade = {CascadeType.ALL})
-	@JsonManagedReference
-    private Set<PlotConfiguration> plotConfigurations;
-	
-	@OneToMany(mappedBy="plot",cascade = {CascadeType.ALL})
-	@JsonManagedReference
-    private Set<IrrigationTransaction> irrigationTransactions;
-	
-	@OneToMany(mappedBy = "plot",cascade = {CascadeType.ALL})
-	@JsonManagedReference
-    private Set<PlotAlert> plotAlerts;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonManagedReference
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
