@@ -1,0 +1,163 @@
+-- -- Supprimer les données existantes (pour un redémarrage propre)
+-- DELETE FROM plot_alert;
+-- DELETE FROM irrigation_transaction;
+-- DELETE FROM plot_configuration;
+-- DELETE FROM plot_sensor;
+-- DELETE FROM plot;
+-- DELETE FROM crop;
+--
+-- -- Insérer des cultures (Crops)
+-- INSERT INTO crop (name, irrigation_rate, water_amount_unit) VALUES
+--                                                                 ('Blé', 5, 3),   -- irrigationRate: fréquence (jours), waterAmountUnit: quantité (mm)
+--                                                                 ('Orge', 6, 3),
+--                                                                 ('Agrumes', 7, 5),
+--                                                                 ('Tomates', 2, 4),
+-- --                                                                 ('Pommes de terre', 3, 4),
+--                                                                 ('Oliviers', 14, 6),
+--                                                                 ('Pastèque', 2, 5),
+--                                                                 ('Melon', 3, 5),
+--                                                                 ('Betterave sucrière', 4, 4),
+--                                                                 ('Lentilles', 7, 3),
+--                                                                 ('Pois chiches', 7, 3),
+--                                                                 ('Tournesol', 8, 4),
+--                                                                 ('Arganier', 21, 8),  -- Adapté aux régions arides
+--                                                                 ('Dattes', 30, 10);   -- Irrigation moins fréquente
+--
+-- -- Insérer des parcelles (Plots)
+-- INSERT INTO plot (location, area, owner_name, next_irragtion_date, last_irragtion_date, sensor_id) VALUES
+--                                                                                                        ('Fès-Meknès', 10, 'Ahmed El Fassi', '2025-03-05T08:00:00', '2025-02-26T08:00:00', null),
+--                                                                                                        ('Marrakech-Safi', 15, 'Fatima Zahra', '2025-03-04T10:00:00', '2025-02-25T10:00:00', null),
+--                                                                                                        ('Tanger-Tétouan-Al Hoceima', 8, 'Mohammed Tazi', '2025-03-06T12:00:00', '2025-02-27T12:00:00', null),
+--                                                                                                        ('Béni Mellal-Khénifra', 12, 'Khadija Alaoui', '2025-03-03T14:00:00', '2025-02-24T14:00:00', null),
+--                                                                                                        ('Oriental', 20, 'Omar Karim', '2025-03-07T16:00:00', '2025-02-28T16:00:00', null),
+--                                                                                                        ('Guelmim-Oued Noun', 5, 'Laila Salhi', '2025-03-02T18:00:00', '2025-02-23T18:00:00', null),
+--                                                                                                        ('Laâyoune-Sakia El Hamra', 3, 'Hassan Derhem', '2025-03-08T20:00:00', '2025-03-01T20:00:00', null),  -- Région aride
+--                                                                                                        ('Dakhla-Oued Ed-Dahab', 25, 'Amina Filali', '2025-03-01T06:00:00', '2025-02-22T06:00:00', null),  -- Région très aride
+--                                                                                                        ('Souss-Massa', 18, 'Youssef Bennani', '2025-03-09T09:00:00', '2025-03-02T09:00:00', null),
+--                                                                                                        ('Casablanca-Settat', 14, 'Nadia El Amrani', '2025-03-10T11:00:00', '2025-03-03T11:00:00', null),
+--                                                                                                        ('Rabat-Salé-Kénitra', 9, 'Karim El Yazidi', '2025-03-11T13:00:00', '2025-03-04T13:00:00', null),
+--                                                                                                        ('Béni Mellal-Khénifra', 7, 'Samira Belhaj', '2025-03-12T15:00:00', '2025-03-05T15:00:00', null),
+--                                                                                                        ('Marrakech-Safi', 16, 'Abdelkader Jilali', '2025-03-13T17:00:00', '2025-03-06T17:00:00', null),
+--                                                                                                        ('Tanger-Tétouan-Al Hoceima', 11, 'Fatiha Bennouna', '2025-03-14T19:00:00', '2025-03-07T19:00:00', null),
+--                                                                                                        ('Oriental', 19, 'Said El Khayat', '2025-03-15T21:00:00', '2025-03-08T21:00:00', null),
+--                                                                                                        ('Souss-Massa', 6, 'Kenza El Idrissi', '2025-03-16T07:00:00', '2025-03-09T07:00:00', null),
+--                                                                                                        ('Guelmim-Oued Noun', 13, 'Mustapha Rami', '2025-03-17T09:00:00', '2025-03-10T09:00:00', null),
+--                                                                                                        ('Laâyoune-Sakia El Hamra', 22, 'Najat Kadmiri', '2025-03-18T11:00:00', '2025-03-11T11:00:00', null),
+--                                                                                                        ('Dakhla-Oued Ed-Dahab', 2, 'Jamal Eddine', '2025-03-19T13:00:00', '2025-03-12T13:00:00', null),
+--                                                                                                        ('Casablanca-Settat', 24, 'Mouna Lahlou', '2025-03-20T15:00:00', '2025-03-13T15:00:00', null);
+--
+-- -- Insérer des capteurs de parcelle (PlotSensor)
+-- INSERT INTO plot_sensor (available, plot_id) VALUES
+--                                                  (true, 1),  -- Sensor disponible pour la parcelle 1
+--                                                  (false, 2), -- Sensor non disponible pour la parcelle 2
+--                                                  (true, 3),
+--                                                  (true, 4),
+--                                                  (false, 5),
+--                                                  (true, 6),
+--                                                  (true, 7),
+--                                                  (false, 8),
+--                                                  (true, 9),
+--                                                  (true, 10),
+--                                                  (false, 11),
+--                                                  (true, 12),
+--                                                  (true, 13),
+--                                                  (false, 14),
+--                                                  (true, 15),
+--                                                  (true, 16),
+--                                                  (false, 17),
+--                                                  (true, 18),
+--                                                  (true, 19),
+--                                                  (false, 20);
+--
+-- -- Update plots avec les IDs des sensors
+-- UPDATE plot SET sensor_id = 1 WHERE id = 1;
+-- UPDATE plot SET sensor_id = 2 WHERE id = 2;
+-- UPDATE plot SET sensor_id = 3 WHERE id = 3;
+-- UPDATE plot SET sensor_id = 4 WHERE id = 4;
+-- UPDATE plot SET sensor_id = 5 WHERE id = 5;
+-- UPDATE plot SET sensor_id = 6 WHERE id = 6;
+-- UPDATE plot SET sensor_id = 7 WHERE id = 7;
+-- UPDATE plot SET sensor_id = 8 WHERE id = 8;
+-- UPDATE plot SET sensor_id = 9 WHERE id = 9;
+-- UPDATE plot SET sensor_id = 10 WHERE id = 10;
+-- UPDATE plot SET sensor_id = 11 WHERE id = 11;
+-- UPDATE plot SET sensor_id = 12 WHERE id = 12;
+-- UPDATE plot SET sensor_id = 13 WHERE id = 13;
+-- UPDATE plot SET sensor_id = 14 WHERE id = 14;
+-- UPDATE plot SET sensor_id = 15 WHERE id = 15;
+-- UPDATE plot SET sensor_id = 16 WHERE id = 16;
+-- UPDATE plot SET sensor_id = 17 WHERE id = 17;
+-- UPDATE plot SET sensor_id = 18 WHERE id = 18;
+-- UPDATE plot SET sensor_id = 19 WHERE id = 19;
+-- UPDATE plot SET sensor_id = 20 WHERE id = 20;
+--
+--
+--
+-- -- Configuration des parcelles (PlotConfiguration) - Assigner des cultures aux parcelles
+-- INSERT INTO plot_configuration (plot_id, crop_id, irrigation_rate, water_amount, current_config) VALUES
+--                                                                                                      (1, 1, 5, 15, true),   -- Parcelle 1: Blé, irrigation tous les 5 jours, 15mm
+--                                                                                                      (2, 3, 7, 35, true),   -- Parcelle 2: Agrumes, irrigation tous les 7 jours, 35mm
+--                                                                                                      (3, 4, 2, 20, true),   -- Parcelle 3: Tomates, irrigation tous les 2 jours, 20mm
+--                                                                                                      (4, 5, 3, 25, true),   -- Parcelle 4: Pommes de terre
+--                                                                                                      (5, 6, 14, 40, true),  -- Parcelle 5: Oliviers
+--                                                                                                      (6, 7, 2, 30, true),   -- Parcelle 6: Pastèque
+--                                                                                                      (7, 13, 21, 50, true), -- Parcelle 7: Arganier (région sèche)
+--                                                                                                      (8, 14, 30, 60, true), -- Parcelle 8: Dattes (région très sèche)
+--                                                                                                      (9, 1, 5, 15, true),   -- Parcelle 9: Blé
+--                                                                                                      (10, 3, 7, 35, true),  -- Parcelle 10: Agrumes
+--                                                                                                      (11, 4, 2, 20, true),  -- Parcelle 11: Tomates
+--                                                                                                      (12, 2, 6, 18, true),  -- Parcelle 12: Orge
+--                                                                                                      (13, 5, 3, 25, true),  -- Parcelle 13: Pommes de terre
+--                                                                                                      (14, 9, 4, 22, true),  -- Parcelle 14: Betterave sucrière
+--                                                                                                      (15, 6, 14, 40, true), -- Parcelle 15: Oliviers
+--                                                                                                      (16, 10, 7, 18, true), -- Parcelle 16: Lentilles
+--                                                                                                      (17, 11, 7, 18, true), -- Parcelle 17: Pois chiches
+--                                                                                                      (18, 7, 2, 30, true),  -- Parcelle 18: Pasteque
+--                                                                                                      (19, 8, 3, 32, true),  -- Parcelle 19: Melon
+--                                                                                                      (20, 12, 8, 28, true);  -- Parcelle 20: Tournesol
+--
+-- -- Transactions d'irrigation (IrrigationTransaction)
+-- INSERT INTO irrigation_transaction (plot_id, status, irragtion_date, trials) VALUES
+--                                                                                  (1, 'SUCCESS', '2025-02-26T08:00:00', 1),
+--                                                                                  (2, 'PENDING', '2025-02-25T10:00:00', 2),
+--                                                                                  (3, 'FAILED', '2025-02-27T12:00:00', 3),
+--                                                                                  (4, 'SUCCESS', '2025-02-24T14:00:00', 1),
+--                                                                                  (5, 'PENDING', '2025-02-28T16:00:00', 2),
+--                                                                                  (6, 'SUCCESS', '2025-02-23T18:00:00', 1),
+--                                                                                  (7, 'FAILED', '2025-03-01T20:00:00', 2),
+--                                                                                  (8, 'SUCCESS', '2025-02-22T06:00:00', 1),
+--                                                                                  (9, 'PENDING', '2025-03-02T09:00:00', 3),
+--                                                                                  (10, 'SUCCESS', '2025-03-03T11:00:00', 1),
+--                                                                                  (1, 'SUCCESS', '2025-03-04T08:00:00', 1),
+--                                                                                  (2, 'PENDING', '2025-03-05T10:00:00', 2),
+--                                                                                  (3, 'FAILED', '2025-03-06T12:00:00', 3),
+--                                                                                  (4, 'SUCCESS', '2025-03-07T14:00:00', 1),
+--                                                                                  (5, 'PENDING', '2025-03-08T16:00:00', 2),
+--                                                                                  (6, 'SUCCESS', '2025-03-09T18:00:00', 1),
+--                                                                                  (7, 'FAILED', '2025-03-10T20:00:00', 2),
+--                                                                                  (8, 'SUCCESS', '2025-03-11T06:00:00', 1),
+--                                                                                  (9, 'PENDING', '2025-03-12T09:00:00', 3),
+--                                                                                  (10, 'SUCCESS', '2025-03-13T11:00:00', 1);
+--
+-- -- Alertes de parcelle (PlotAlert)
+-- INSERT INTO plot_alert (plot_id, creation_date, irrigation_transaction_id) VALUES
+--                                                                                (1, '2025-02-27T09:00:00', 1),
+--                                                                                (2, '2025-02-26T11:00:00', 2),
+--                                                                                (3, '2025-02-28T13:00:00', 3),
+--                                                                                (4, '2025-02-25T15:00:00', 4),
+--                                                                                (5, '2025-03-01T17:00:00', 5),
+--                                                                                (6, '2025-02-24T19:00:00', 6),
+--                                                                                (7, '2025-03-02T21:00:00', 7),
+--                                                                                (8, '2025-02-23T07:00:00', 8),
+--                                                                                (9, '2025-03-03T10:00:00', 9),
+--                                                                                (10, '2025-03-04T12:00:00', 10),
+--                                                                                (1, '2025-03-05T09:00:00', 11),
+--                                                                                (2, '2025-03-06T11:00:00', 12),
+--                                                                                (3, '2025-03-07T13:00:00', 13),
+--                                                                                (4, '2025-03-08T15:00:00', 14),
+--                                                                                (5, '2025-03-09T17:00:00', 15),
+--                                                                                (6, '2025-03-10T19:00:00', 16),
+--                                                                                (7, '2025-03-11T21:00:00', 17),
+--                                                                                (8, '2025-03-12T07:00:00', 18),
+--                                                                                (9, '2025-03-13T10:00:00', 19),
+--                                                                                (10, '2025-03-14T12:00:00', 20);

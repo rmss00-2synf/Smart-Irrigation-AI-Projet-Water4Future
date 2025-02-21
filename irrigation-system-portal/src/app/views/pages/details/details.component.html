@@ -1,0 +1,133 @@
+<div class="row">
+  <div class="container mx-auto py-8">
+    <div class="bg-white shadow overflow-hidden rounded-md">
+      <div class="px-4 py-5 sm:px-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg leading-6 font-medium text-gray-900">
+          Plot Details</h2>
+          <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" (click)="editPlot()">
+            Edit Details
+          </button>
+        </div>
+        <div class="row">
+
+          <div class="col-12 mt-4 ml-3 border-t border-gray-200">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs flex border-b border-gray-200">
+              <li [ngbNavItem]="1">
+                <a ngbNavLink class="px-6 py-3 block text-gray-700 hover:text-blue-500 focus:outline-none">
+                  Plot Basic Configurations
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="card mb-4">
+                        <div class="card-body">
+                          <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Plot Info and Configurations</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <p><span class="font-medium text-gray-700">Plot location:</span> {{ plot?.location }}</p>
+                                <p><span class="font-medium text-gray-700">Plot Area:</span> {{ plot?.area }} m2</p>
+                                <p><span class="font-medium text-gray-700">Owner Name:</span> {{ plot?.ownerName }}</p>
+                              </div>
+                              <div>
+                                <p><span class="font-medium text-gray-700">Last Irrigation Date:</span> {{ formatDate(plot?.lastIrragtionDate) }}</p>
+                                <p><span class="font-medium text-gray-700">Next Irrigation Date:</span> {{ formatDate(plot?.nextIrragtionDate) }}</p>
+                                <p><span class="font-medium text-gray-700">Configurations:</span> Planted with <b class="text-green-500">{{currentPlotConfiguration?.crop?.name}}</b> every <b>{{currentPlotConfiguration?.irrigationRate}}</b> minutes with Amount of water <b>{{currentPlotConfiguration?.waterAmount}}</b> Liter</p>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="2">
+                <a ngbNavLink class="px-6 py-3 block text-gray-700 hover:text-blue-500 focus:outline-none">Plot Irragation History</a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Irrigation Transactions</h3>
+                        <table class="table mt-4">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col">irrigation Id</th>
+                            <th scope="col">irrigation Status</th>
+                            <th scope="col">irrigation trials</th>
+                            <th scope="col">irrigation date</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let irrigationTransaction of plot.irrigationTransactions">
+                            <th scope="irrigationTransaction"> </th>
+                            <td class="alert-table-col">{{ irrigationTransaction.id }}</td>
+                            <td class="alert-table-col">
+                              <span [class]="getStatusColorClass(irrigationTransaction.status)">{{ irrigationTransaction.status }}</span>
+                            </td>
+                            <td class="alert-table-col">
+                              {{ irrigationTransaction.trials }}
+                            </td>
+                            <td class="alert-table-col">
+                              {{ irrigationTransaction.irragtionDate.split('T')[0]}} {{irrigationTransaction.irragtionDate.split('T')[1].split('.')[0]}}
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="3">
+                <a ngbNavLink class="px-6 py-3 block text-gray-700 hover:text-blue-500 focus:outline-none">
+                  Plot Alerts
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Alerts</h3>
+                        <p class="text-gray-600">Alerts are triggered when plot irrigartion failed for 3 consecutive times</p>
+                        <table class="table mt-4">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Alert Id</th>
+                            <th scope="col">Alert Creation Date</th>
+                            <th scope="col">related Irrigation id</th>
+                            <th scope="col">related Irrigation date</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let plotAlert of plot.plotAlerts">
+                            <th scope="plotAlert"></th>
+                            <td class="alert-table-col">{{ plotAlert.id }}</td>
+                            <td class="alert-table-col">
+                              {{ plotAlert.creationDate.split('T')[0]}} {{plotAlert.creationDate.split('T')[1].split('.')[0]}}
+                            </td>
+                            <td class="alert-table-col">{{ plotAlert.irrigationTransaction.id }}</td>
+                            <td class="alert-table-col">
+                              {{ plotAlert.irrigationTransaction.irragtionDate.split('T')[0]}} {{plotAlert.irrigationTransaction.irragtionDate.split('T')[1].split('.')[0]}}
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+            </ul>
+            <div [ngbNavOutlet]="nav" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

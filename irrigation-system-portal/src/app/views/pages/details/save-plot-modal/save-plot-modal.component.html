@@ -1,0 +1,107 @@
+<div class="modal-header bg-gray-100 py-3">
+  <h5 class="modal-title text-lg font-semibold text-gray-900" *ngIf="mode === 'edit'">Edit Plot</h5>
+  <h5 class="modal-title text-lg font-semibold text-gray-900" *ngIf="mode === 'add'">Add Plot</h5>
+  <button type="button" class="close text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <form class="forms-sample" [formGroup]="plotForm" (ngSubmit)="onSubmit()">
+        <div class="row mt-4">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Plot Location</label>
+              <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" formControlName="location" autocomplete="off" placeholder="Plot Location" [ngClass]="{
+                    'border-red-500': submitted && f['location']['errors']
+                  }" />
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['location']['errors']">
+                <p *ngIf="f['location']['errors']['required']">
+                  Plot Location is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Plot Area per m2</label>
+              <input type="number" min="1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" formControlName="area" autocomplete="off" placeholder="Plot Area per m2" [ngClass]="{
+                    'border-red-500': submitted && f['area']['errors']
+                  }" />
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['area']['errors']">
+                <p *ngIf="f['area']['errors']['required']">
+                  Plot Area is required
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Plot Owner Name</label>
+              <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" formControlName="ownerName" autocomplete="off" placeholder="Plot Owner Name" [ngClass]="{
+                    'border-red-500': submitted && f['ownerName']['errors']
+                  }" />
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['ownerName']['errors']">
+                <p *ngIf="f['ownerName']['errors']['required']">
+                  Plot Owner Name is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Plot Crop</label>
+              <select [compareWith]="compareWithCrops" (change)="loadCropRecommondations()" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="crop" id="crop" formControlName="crop">
+                <option *ngFor="let crop of crops" [ngValue]="crop">
+                  {{crop.name}}
+                </option>
+              </select>
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['crop']['errors']">
+                <p *ngIf="f['crop']['errors']['required']">
+                  Crop is Required
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Irrigation Rate per minutes</label>
+              <input type="number" min="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" formControlName="irrigationRate" autocomplete="off" placeholder="Irrigation Rate" [ngClass]="{
+                    'border-red-500': submitted && f['irrigationRate']['errors']
+                  }" />
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['irrigationRate']['errors']">
+                <p *ngIf="f['irrigationRate']['errors']['required']">
+                  Irrigation Rate is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Water Amount per Liter</label>
+              <input type="number" min="1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" formControlName="waterAmount" autocomplete="off" placeholder="Water Amount" [ngClass]="{
+                    'border-red-500': submitted && f['waterAmount']['errors']
+                  }" />
+              <div class="text-red-500 text-xs italic mt-1" *ngIf="submitted && f['waterAmount']['errors']">
+                <p *ngIf="f['waterAmount']['errors']['required']">
+                  Water Amount is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <h5 class="mt-4 text-sm text-gray-500">When Choosing Crop, system will recommend Irrigation Rate value</h5>
+        </div>
+        <div class="modal-footer bg-gray-100 py-3">
+          <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" *ngIf="mode === 'edit'">Edit</button>
+          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" *ngIf="mode === 'add'">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
