@@ -10,7 +10,7 @@ PlotService extends CommonService{
 	
 	List<Plot> getAllPlots();
 	
-	Plot getPlotById(Integer id);
+	PlotDto getPlotById(Integer id);
 	
 	Plot addNewPlot(PlotDto plotDto);
 	

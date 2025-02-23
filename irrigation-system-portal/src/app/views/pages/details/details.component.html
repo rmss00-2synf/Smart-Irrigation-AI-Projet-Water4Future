@@ -33,7 +33,7 @@
                               <div>
                                 <p><span class="font-medium text-gray-700">Last Irrigation Date:</span> {{ formatDate(plot?.lastIrragtionDate) }}</p>
                                 <p><span class="font-medium text-gray-700">Next Irrigation Date:</span> {{ formatDate(plot?.nextIrragtionDate) }}</p>
-                                <p><span class="font-medium text-gray-700">Configurations:</span> Planted with <b class="text-green-500">{{currentPlotConfiguration?.crop?.name}}</b> every <b>{{currentPlotConfiguration?.irrigationRate}}</b> minutes with Amount of water <b>{{currentPlotConfiguration?.waterAmount}}</b> Liter</p>
+                                <p><span class="font-medium text-gray-700">Configurations:</span> Planted with <b class="text-green-500">{{currentPlotConfiguration?.cropId?.name}}</b> every <b>{{currentPlotConfiguration?.irrigationRate}}</b> minutes with Amount of water <b>{{currentPlotConfiguration?.waterAmount}}</b> Liter</p>
                               </div>
                             </div>
                           </div>
@@ -63,6 +63,7 @@
                           </thead>
                           <tbody>
                           <tr *ngFor="let irrigationTransaction of plot.irrigationTransactions">
+
                             <th scope="irrigationTransaction"> </th>
                             <td class="alert-table-col">{{ irrigationTransaction.id }}</td>
                             <td class="alert-table-col">

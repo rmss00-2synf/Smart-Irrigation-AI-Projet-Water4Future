@@ -40,8 +40,6 @@ public class IrrigationTransaction {
 	@JsonBackReference
     @JoinColumn(name="plot_id", nullable=false)
     private Plot plot;
-	
-	@OneToMany(mappedBy = "irrigationTransaction")
-    private Set<PlotAlert> plotAlerts;
+
 
 }

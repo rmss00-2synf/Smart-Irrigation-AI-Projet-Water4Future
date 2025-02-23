@@ -36,8 +36,8 @@ public class PlotController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Plot> getPlot(@PathVariable("id") Integer id) {
-		Plot plot = plotService.getPlotById(id);
+	public ResponseEntity<PlotDto> getPlot(@PathVariable("id") Integer id) {
+		PlotDto plot = plotService.getPlotById(id);
 		if (plot == null) {
 			return ResponseEntity.notFound().build();
 		}

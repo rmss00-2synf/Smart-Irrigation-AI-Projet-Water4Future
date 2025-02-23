@@ -2,39 +2,46 @@ package com.bankmisr.service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.bankmisr.controller.payload.*;
+import com.bankmisr.data.model.*;
 import com.bankmisr.data.repositories.PlotSensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bankmisr.common.exception.ResourceNotFoundException;
-import com.bankmisr.controller.payload.PlotDto;
-import com.bankmisr.data.model.Crop;
-import com.bankmisr.data.model.Plot;
-import com.bankmisr.data.model.PlotConfiguration;
-import com.bankmisr.data.model.PlotSensor;
 import com.bankmisr.data.repositories.CropRepository;
 import com.bankmisr.data.repositories.PlotRepository;
 
 
 @Service
 public class PlotServiceImpl implements PlotService {
-	
 
+	private final PlotIrrigationTransactionServiceImp plotIrrigationTransactionServiceImp;
+	private final PlotAlertService plotAlertService;
 	private final PlotRepository plotRepository;
 	private final CropRepository cropRepository;
 	private final PlotSensorService plotSensorService;
 	private final PlotSensorRepository plotSensorRepository;
-	@Autowired
-	private PlotConfigurationServiceImpl plotConfigurationService;
+	private final PlotConfigurationServiceImpl plotConfigurationService;
 
 	@Autowired
-	public PlotServiceImpl(PlotRepository plotRepository, CropRepository cropRepository,PlotSensorService plotSensorService,PlotSensorRepository plotSensorRepository) {
+	public PlotServiceImpl(PlotRepository plotRepository,
+						   CropRepository cropRepository,
+						   PlotSensorService plotSensorService,
+						   PlotSensorRepository plotSensorRepository,
+						   PlotConfigurationServiceImpl plotConfigurationService,
+						   PlotAlertService plotAlertService,
+						   PlotIrrigationTransactionServiceImp plotIrrigationTransactionServiceImp) {
 		this.plotRepository = plotRepository;
 		this.cropRepository = cropRepository;
 		this.plotSensorService = plotSensorService;
 		this.plotSensorRepository = plotSensorRepository;
+		this.plotConfigurationService = plotConfigurationService;
+		this.plotAlertService = plotAlertService;
+		this.plotIrrigationTransactionServiceImp = plotIrrigationTransactionServiceImp;
 	}
 
 
@@ -45,8 +52,8 @@ public class PlotServiceImpl implements PlotService {
 	}
 
 	@Override
-	public Plot getPlotById(Integer id) {
-		return plotRepository.findById(id).orElse(null);
+	public PlotDto getPlotById(Integer id) {
+		return plotDto(Objects.requireNonNull(plotRepository.findById(id).orElse(null)));
 	}
 
 
@@ -127,6 +134,26 @@ public class PlotServiceImpl implements PlotService {
 		Plot plot = plotRepository.findById(plotId).orElseThrow(() -> new ResourceNotFoundException("Plot with id: " + plotId));
 		plot.getPlotSensor().setAvailable(Boolean.valueOf(!plot.getPlotSensor().getAvailable()));
 		plotSensorRepository.save(plot.getPlotSensor());
+	}
+
+	public PlotDto plotDto(Plot plot){
+
+		return PlotDto.builder()
+				.id(plot.getId())
+				.location(plot.getLocation())
+				.area(plot.getArea())
+				.ownerName(plot.getOwnerName())
+				.nextIrragtionDate(plot.getNextIrragtionDate())
+				.lastIrragtionDate(plot.getLastIrragtionDate())
+				.plotConfigurations(plotConfigurationService.getPlotConfigurations(plot.getId()).stream()
+						.map(PlotConfigurationDto::toDto).collect(Collectors.toSet()))
+				.plotAlerts(plotAlertService.getPlotAlert(plot.getId()).stream()
+						.map(PlotAlertDTO::toDTO).collect(Collectors.toSet()))
+				.plotSensor(PlotSensorDto.toDto(plot.getPlotSensor()))
+				.irrigationTransactions(plotIrrigationTransactionServiceImp.getPlotConfigurations(plot.getId()).stream()
+						.map(IrrigationTransactionDTO::toDTO)
+						.collect(Collectors.toSet()))
+				.build();
 	}
 
 }

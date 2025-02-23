@@ -41,9 +41,11 @@ export class DetailsComponent implements OnInit {
     const plotId: any = this.route.snapshot.paramMap.get('plotId');
     this.irrigationSystemService.getPlot(plotId).subscribe({
       next: (plot: Plot) => {
+        console.log(plot)
         this.plot = plot;
         this.currentPlotConfiguration = this.plot?.plotConfigurations?.filter(
           (plotConfiguration) => {
+            console.log(plotConfiguration)
             return plotConfiguration.currentConfig == true;
           }
         )[0];
@@ -91,4 +93,6 @@ export class DetailsComponent implements OnInit {
         return 'text-gray-500';
     }
   }
+
+    protected readonly console = console;
 }
